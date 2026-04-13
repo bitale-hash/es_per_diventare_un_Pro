@@ -10,7 +10,7 @@ import java.io.*;       //mi serve per leggere e scrivere su file
 
 public class TaskRepository {
     
-    private final String FILE_NAME = "tasks.txt";  //final serve per indicare che questa variabile non è modificabile
+    private static final String FILE_NAME = "tasks.txt";  //final serve per indicare che questa variabile non è modificabile
 
     public void saveTasks(List<Task> tasks) {
         
@@ -56,15 +56,14 @@ public class TaskRepository {
             while ( (line = reader.readLine())!=null  ) {   //legge una riga alla volta fino a quando non arriva alla fine del file (null)
                 String[] parts = line.split(";");    //divide la riga in parti usando ";" come separatori
 
-                if (parts.length != 4) {
+                if (parts.length != 4) 
                     continue;
-                }
-                   try{ 
-                    
-                    String id = parts[0];
-                    String description = parts[1];
-                    if (description == null || description.isBlank()) 
+                String id = parts[0];
+                String description = parts[1];
+                
+                if (description == null || description.isBlank()) 
                         continue;
+                   try{ 
 
                     Priority priority = Priority.valueOf(parts[2]);   //converte la stringa in un oggetto Priority
                     boolean completed = Boolean.parseBoolean(parts[3]);  //converte la stringa in un booleano
