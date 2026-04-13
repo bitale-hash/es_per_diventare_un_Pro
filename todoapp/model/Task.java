@@ -7,13 +7,21 @@ public class Task{
     private Priority priority;
     private boolean completed;
     private String id;  //non lo utilizzo per ora, ma potrebbe essere utile in futuro per implementare nuove funzionalità 
-    
+        
+        //COSTRUTTORE1
     public Task(String description, Priority priority, boolean completed) {
     this.id= UUID.randomUUID().toString();  //genera un id univoco per ogni task
-    this(description, priority, completed);    /*this.description = description;
-                                                this.priority = priority;
-                                                this.completed = completed;*/
+    this(description, priority, completed);    /* = this.description = description;
+                                                    this.priority = priority;
+                                                    this.completed = completed;*/
     
+    }
+        //COSTRUTTORE2
+    public Task(String id, String description, Priority priority, boolean completed) {
+        this.id = id;
+        this.description = description;
+        this.priority = priority;
+        this.completed = completed;
     }
 
         //GET

@@ -23,13 +23,15 @@ public class TaskRepository {
 
 
                 //crea la stringa nel formato in cui la voglio salvare
-            String line = task.getDescription() + ";" +
+            String line = 
+                    task.getId() + ";" +  
+                    task.getDescription() + ";" +
                     task.getPriority() + ";" +
                     task.isCompleted();     
 
             writer.write(line);     //scrive la riga "line"
             writer.newLine();       //va a capo 
-            System.out.println("SALVATAGGIO FILE...");
+             
         }
         } catch (IOException e) {
              System.out.println("Errore salvataggio: " + e.getMessage());
@@ -54,20 +56,27 @@ public class TaskRepository {
             while ( (line = reader.readLine())!=null  ) {   //legge una riga alla volta fino a quando non arriva alla fine del file (null)
                 String[] parts = line.split(";");    //divide la riga in parti usando ";" come separatori
 
-                if (parts.length == 3) {     //controlla che ci siano esattamente 3 parti (descrizione, priorità, completato)
-                    String description = parts[0];
+                if (parts.length != 4) {
+                    continue;
+                }
+                   try{ 
+                    
+                    String id = parts[0];
+                    String description = parts[1];
+                    if (description == null || description.isBlank()) 
+                        continue;
 
-                    try{ 
-                    Priority priority = Priority.valueOf(parts[1]);   //converte la stringa in un oggetto Priority
-                    boolean completed = Boolean.parseBoolean(parts[2]);  //converte la stringa in un booleano
+                    Priority priority = Priority.valueOf(parts[2]);   //converte la stringa in un oggetto Priority
+                    boolean completed = Boolean.parseBoolean(parts[3]);  //converte la stringa in un booleano
 
-                    Task task = new Task(description, priority , completed );   //crea un nuovo oggetto Task con descrizione e priorità
+                    Task task = new Task(id,description, priority , completed );   //crea un nuovo oggetto Task con descrizione e priorità
                     
                     tasks.add(task);  //aggiunge il task alla lista
                     } catch (IllegalArgumentException e) {
-                        System.out.println("Dati non validi, riga saltata "+ line );
+                        //System.out.println("Riga corrotta o non valida: " + line);
+                        continue;  
                     }
-                }
+                
             }
         } catch (IOException e) {
              System.out.println("Errore caricamento: " + e.getMessage());
