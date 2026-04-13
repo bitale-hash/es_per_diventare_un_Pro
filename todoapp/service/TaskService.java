@@ -1,0 +1,60 @@
+package service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Priority;  //per assengnare la priorità al task
+import model.Task;      //per creare una lista di task 
+
+public class TaskService {
+
+    private List<Task> tasks = new ArrayList<>();
+
+    public void addTask(String description, Priority priority) {
+    Task task = new Task(description, priority);
+    tasks.add(task);
+    }
+
+    public void printTasks() {
+        if (tasks.isEmpty()) {
+        System.out.println("Nessun task presente.");
+        return;
+        }
+
+        for (Task task : tasks) {
+            System.out.println(task);
+        }
+
+    }   
+
+    public void markAsCompleted(int index) {
+    if (index < 0 || index >= tasks.size()) {
+        System.out.println("Indice non valido");
+        return;
+    }
+
+    tasks.get(index).setCompleted(true);
+    }
+    public void removeTask(int index) {
+        if (index < 0 || index >= tasks.size()) {
+            System.out.println("Indice non valido");
+            return;
+        }   
+    Task removed = tasks.remove(index);
+    System.out.println("Rimosso: " + removed);
+    }
+
+    public List<Task> searchTasks(String keyword){
+        if (keyword == null || keyword.isBlank()) 
+             return new ArrayList<>();
+        
+
+        List<Task> result= new ArrayList<>();
+        for(Task task: tasks){
+            if(task.getDescription().toLowerCase().contains(keyword.toLowerCase())){
+                result.add(task);
+            }       
+        }
+        return result; 
+    }
+}
