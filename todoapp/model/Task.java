@@ -1,22 +1,21 @@
 package model;
+import java.util.UUID;
 //import model.Priority;
 
 public class Task{
     private String description;
     private Priority priority;
     private boolean completed;
+    private String id;  //non lo utilizzo per ora, ma potrebbe essere utile in futuro per implementare nuove funzionalità 
     
     public Task(String description, Priority priority, boolean completed) {
-    this.description = description;
-    this.priority = priority;
-    this.completed = completed;
+    this.id= UUID.randomUUID().toString();  //genera un id univoco per ogni task
+    this(description, priority, completed);    /*this.description = description;
+                                                this.priority = priority;
+                                                this.completed = completed;*/
+    
     }
 
-    public Task(String description, Priority priority) {
-    this.description = description;
-    this.priority = priority;
-    this.completed = false;
-    }
         //GET
     public String getDescription(){
         return description;
@@ -26,6 +25,9 @@ public class Task{
     }
     public boolean isCompleted(){
         return completed;
+    }
+    public String getId(){
+        return id;
     }
         //SET
     public void setDescription(String d){
@@ -37,16 +39,16 @@ public class Task{
     public void setCompleted(boolean b){
         this.completed=b;
     }
-
+    
     @Override
     public String toString(){
         return """
-        
+                id: %s
                 Task : %s
                 Priority: %s
                 state:   %s
 
-                """.formatted(description, priority ,completed);
+                """.formatted(id,description, priority ,completed);
       
     }
     

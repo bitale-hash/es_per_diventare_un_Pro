@@ -53,7 +53,7 @@ public class ConsoleUI {
         System.out.print("Priorità (LOW, MEDIUM, HIGH): ");
         Priority priority = Priority.valueOf(scanner.nextLine().toUpperCase());
 
-        service.addTask(desc, priority);
+        service.addTask(desc, priority, false);
     }
 
     private void completeTask() {

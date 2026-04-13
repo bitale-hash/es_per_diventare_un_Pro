@@ -29,6 +29,7 @@ public class TaskRepository {
 
             writer.write(line);     //scrive la riga "line"
             writer.newLine();       //va a capo 
+            System.out.println("SALVATAGGIO FILE...");
         }
         } catch (IOException e) {
              System.out.println("Errore salvataggio: " + e.getMessage());
