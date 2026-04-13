@@ -25,17 +25,22 @@ Il progetto è stato realizzato per esercitarmi con la programmazione orientata 
 
 todoapp/
 │
-├── model/
-│   ├── Task.java        → modello del task
-│   └── Priority.java    → enum delle priorità
-|
-├── repository
-|   ├── TaskRepository.java
-|
-├── service/
-│   └── TaskService.java → logica dell'app (gestione task)
+├── tasks.txt               → file di salvataggio dati
 │
-└── Main.java            → punto di ingresso del programma
+├── model/
+│   ├── Task.java           → modello del task
+│   └── Priority.java       → enum delle priorità
+│
+├── repository/
+│   └── TaskRepository.java → gestione salvataggio/caricamento
+│
+├── service/
+│   └── TaskService.java    → logica dell'app (gestione task)
+│
+├── ui/
+│   └── ConsoleUI.java      → interfaccia utente
+│
+└── Main.java               → punto di ingresso del programma
 
 ---
 

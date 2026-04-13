@@ -5,10 +5,17 @@ import java.util.List;
 
 import model.Priority;  //per assengnare la priorità al task
 import model.Task;      //per creare una lista di task 
+import repository.TaskRepository;
 
 public class TaskService {
 
     private List<Task> tasks = new ArrayList<>();
+    private TaskRepository repository;
+
+    public TaskService(List<Task> tasks, TaskRepository repository) {
+    this.tasks = tasks;
+    this.repository = repository;
+}
 
     public void addTask(String description, Priority priority) {
     Task task = new Task(description, priority);
@@ -23,6 +30,7 @@ public class TaskService {
 
         for (Task task : tasks) {
             System.out.println(task);
+            System.out.println("-------------------");
         }
 
     }   
@@ -35,6 +43,7 @@ public class TaskService {
 
     tasks.get(index).setCompleted(true);
     }
+    
     public void removeTask(int index) {
         if (index < 0 || index >= tasks.size()) {
             System.out.println("Indice non valido");
@@ -56,5 +65,9 @@ public class TaskService {
             }       
         }
         return result; 
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

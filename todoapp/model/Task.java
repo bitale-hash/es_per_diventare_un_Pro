@@ -1,11 +1,17 @@
 package model;
-import model.Priority;
+//import model.Priority;
 
 public class Task{
     private String description;
     private Priority priority;
     private boolean completed;
     
+    public Task(String description, Priority priority, boolean completed) {
+    this.description = description;
+    this.priority = priority;
+    this.completed = completed;
+    }
+
     public Task(String description, Priority priority) {
     this.description = description;
     this.priority = priority;
@@ -35,9 +41,11 @@ public class Task{
     @Override
     public String toString(){
         return """
-                La descrizione del task è: %s
-                La priorità del task è: %s
-                Lo stato del task è:   %s
+        
+                Task : %s
+                Priority: %s
+                state:   %s
+
                 """.formatted(description, priority ,completed);
       
     }
