@@ -3,4 +3,5 @@
 esercizi dati da chatgbt/gemini per diventare un pro in java
 
 ## Contenuto
-- esercizio-1: to-do app
+- esercizio-1: to do app
+- esercizio-2: expense tracker
