@@ -18,16 +18,18 @@ import es_per_diventare_un_Pro.expenseTracker.repository.ExpenseRepository;
 public class ExpenseService {
 
     private final List<Expense> expenses;
-    private ExpenseRepository repository;
+    private final ExpenseRepository repository;
         
         //COSTRUTTORE
     public ExpenseService(List<Expense> expenses, ExpenseRepository repository) {
-    this.expenses = (expenses != null) ? expenses : new ArrayList<>(); //questo evita che expenses sia null, se lo è viene inizializzato come una nuova lista vuota
-    this.repository = Objects.requireNonNull(repository, "Repository cannot be null");
+        this.expenses = new ArrayList<>(Objects.requireNonNullElse(expenses, new ArrayList<>()));
+        this.repository = Objects.requireNonNull(repository, "Repository cannot be null");
     }
         //CRUD
     public void addExpense(String description, BigDecimal amount, Category category, LocalDate date, String note) {
-        Expense expense = new Expense(description, amount, category, date, note);
+        Expense expense = Expense.create(description, amount, category, date, note);
+        if (expenses.contains(expense)) 
+            throw new IllegalArgumentException("Expense already exists");
         expenses.add(expense);
         save();
     }
@@ -48,7 +50,7 @@ public class ExpenseService {
     public BigDecimal getTotalByCategory(Category category) {
         Objects.requireNonNull(category, "Category cannot be null");
          return sum(expenses.stream()
-                    .filter(e -> e.getCategory().equals(category))
+                    .filter(e -> category.equals(e.getCategory()))
                     .toList());
             
     }
@@ -82,7 +84,7 @@ public class ExpenseService {
     public List<Expense> findByCategory(Category category) {
         Objects.requireNonNull(category, "Category cannot be null");
         return expenses.stream()
-            .filter(e -> e.getCategory().equals(category)) //seleziona solo cio che rispetta la condizione
+            .filter(e -> category.equals(e.getCategory())) //seleziona solo cio che rispetta la condizione
             .toList() ;                                //colleziona i risultati in una lista
     }
     
@@ -104,6 +106,7 @@ public class ExpenseService {
     }
     public Expense getMaxExpense() {
         return expenses.stream()
+        .filter(e -> e.getAmount() != null)
         .max(Comparator.comparing(Expense::getAmount))
         .orElseThrow(() -> new IllegalStateException("No expenses available"));
     }
@@ -134,25 +137,21 @@ public class ExpenseService {
 
         return sum(expenses.stream()
             .filter(e -> e.getDate() != null &&
-                         e.getDate().isAfter(now.minusDays(7))) 
+                         !e.getDate().isBefore(now.minusDays(7))) 
             .toList());
     }
         
     
     
     //METODI PRIVATI
-    private void validateAmount(BigDecimal amount) {
-    if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0)
-        throw new IllegalArgumentException("Amount must be >= 0");
-    }
+    
     private BigDecimal sum(List<Expense> list) {
     return list.stream()
             .map(Expense::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     private void save() {
-    if (repository == null) 
-        return;
+
     repository.saveExpenses(expenses);
 }
 }
