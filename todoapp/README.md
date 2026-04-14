@@ -11,6 +11,13 @@ Ogni task contiene:
 Il progetto è stato realizzato per esercitarmi con la programmazione orientata agli oggetti e la gestione delle collezioni in Java.
 
 ---
+## ▶️Come eseguire il progetto
+
+1. Aprire il progetto in un IDE 
+2. Eseguire il file `Main.java`
+3. Utilizzare la console per interagire con il programma
+
+---
 
 ## 🚀 Funzionalità
 - Aggiungere nuovi task
@@ -52,13 +59,6 @@ todoapp/
 
 ---
 
-## ▶️ Come eseguire il progetto
-1. Aprire il progetto in un IDE 
-2. Eseguire il file `Main.java`
-3. Utilizzare la console per interagire con il programma
-
----
-
 ## 📚 Obiettivi di apprendimento
 Questo progetto è stato sviluppato per esercitarmi con:
 - classi e oggetti
@@ -67,11 +67,5 @@ Questo progetto è stato sviluppato per esercitarmi con:
 - separazione della logica in livelli (model / service)
 - metodi e organizzazione del codice
 
----
 
-## 💡 Possibili miglioramenti futuri
-- Salvataggio dei task su file
-- Caricamento automatico all’avvio
-- Aggiunta di scadenze (Date)
-- Interfaccia grafica
-- Persistenza su database
+

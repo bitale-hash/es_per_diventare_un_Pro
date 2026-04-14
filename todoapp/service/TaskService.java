@@ -23,7 +23,8 @@ public class TaskService {
     tasks.add(task);
     repository.saveTasks(tasks);
     }
-
+    
+    
     public void printTasks() {
         if (tasks.isEmpty()) {
         System.out.println("Nessun task presente.");
@@ -37,28 +38,27 @@ public class TaskService {
 
     }   
 
-    public void markAsCompleted(int index) {
-            
+    public boolean markAsCompleted(int index) {
+
         if (index < 0 || index >= tasks.size()) {
-        System.out.println("Indice non valido");
-        return;
-    }
+            return false;
+        }
 
         tasks.get(index).setCompleted(true);
         repository.saveTasks(tasks);
-        System.out.println("Task completato: " + tasks.get(index));
+        return true;
     }
 
         //DOVREBBE ESSERE RISTRUTTURATO PER POTER RIMUOVERE UN TASK IN ALTRI MODI, NON SOLO PER INDICE
-    public void removeTask(int index) {
+    public boolean removeTask(int index) {
+
         if (index < 0 || index >= tasks.size()) {
-        System.out.println("Indice non valido");
-        return;
-    }
-          
-        Task removed = tasks.remove(index);
-        System.out.println("Rimosso: " + removed);
+            return false;
+        }
+
+        tasks.remove(index);
         repository.saveTasks(tasks);
+        return true;
     }
 
     public List<Task> searchTasks(String keyword){

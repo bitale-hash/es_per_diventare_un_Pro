@@ -10,10 +10,10 @@ public class Task{
         
         //COSTRUTTORE1
     public Task(String description, Priority priority, boolean completed) {
-    this.id= UUID.randomUUID().toString();  //genera un id univoco per ogni task
-    this(description, priority, completed);    /* = this.description = description;
-                                                    this.priority = priority;
-                                                    this.completed = completed;*/
+        this.id= UUID.randomUUID().toString();  //genera un id univoco per ogni task
+        this.description = description;
+        this.priority = priority;
+        this.completed = completed;
     
     }
         //COSTRUTTORE2
@@ -39,6 +39,8 @@ public class Task{
     }
         //SET
     public void setDescription(String d){
+        if (d == null || d.isBlank())
+            return;
         this.description=d;
     }
     public void setPriority(Priority p){
@@ -51,6 +53,7 @@ public class Task{
     @Override
     public String toString(){
         return """
+        
                 id: %s
                 Task : %s
                 Priority: %s

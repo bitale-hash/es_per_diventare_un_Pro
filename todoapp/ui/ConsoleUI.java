@@ -20,17 +20,9 @@ public class ConsoleUI {
         int choice;
 
         do {
-            System.out.println("\n=== TODO APP ===");
-            System.out.println("1. Aggiungi task");
-            System.out.println("2. Mostra task");
-            System.out.println("3. Completa task");
-            System.out.println("4. Rimuovi task");
-            System.out.println("5. Cerca task");
-            System.out.println("0. Esci");
-            System.out.print("Scelta: ");
+            printMenu();
 
-            choice = scanner.nextInt();
-            scanner.nextLine();
+            choice = readInt();
 
             switch (choice) {
 
@@ -46,37 +38,80 @@ public class ConsoleUI {
         } while (choice != 0);
     }
 
+    private void printMenu() {
+    System.out.println("\n=== TODO APP ===");
+    System.out.println("1. Aggiungi task");
+    System.out.println("2. Mostra task");
+    System.out.println("3. Completa task");
+    System.out.println("4. Rimuovi task");
+    System.out.println("5. Cerca task");
+    System.out.println("0. Esci");
+    }
+
     private void addTask() {
-        System.out.print("Descrizione: ");
-        String desc = scanner.nextLine();
-
-        System.out.print("Priorità (LOW, MEDIUM, HIGH): ");
-        Priority priority = Priority.valueOf(scanner.nextLine().toUpperCase());
-
+        String desc = readLine("Descrizione: ");
+        Priority priority = readPriority();
         service.addTask(desc, priority, false);
     }
 
     private void completeTask() {
-        System.out.print("Indice: ");
-        int index = scanner.nextInt();
-        scanner.nextLine();
+        
+        int index = readInt();
+        boolean success = service.markAsCompleted(index);
 
-        service.markAsCompleted(index);
+        if (success) 
+            System.out.println("✔ Task completato");
+        else 
+            System.out.println("✘ Indice non valido");
+    
+        
     }
 
     private void removeTask() {
-        System.out.print("Indice: ");
-        int index = scanner.nextInt();
-        scanner.nextLine();
+        
+        int index = readInt();
+        boolean success = service.removeTask(index);
 
-        service.removeTask(index);
+        if (success) 
+            System.out.println("✔ Task rimosso");
+        else 
+            System.out.println("✘ Indice non valido");
+    
     }
 
     private void searchTask() {
-        System.out.print("Keyword: ");
-        String keyword = scanner.nextLine();
 
+        String keyword = readLine("Keyword: ");
         service.searchTasks(keyword)
                 .forEach(System.out::println);
     }
+
+    private int readInt() {
+    while (true) {
+        try {
+            System.out.print("Scelta: ");
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Inserisci un numero valido.");
+        }
+    }
+}
+
+    private Priority readPriority() {
+        while (true) {
+            System.out.print("Priorità (LOW, MEDIUM, HIGH): ");
+            String input = scanner.nextLine().trim().toUpperCase();
+
+            try {
+                return Priority.valueOf(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Valore non valido, riprova.");
+            }
+        }
+    }
+
+    private String readLine(String label) {
+    System.out.print(label);
+    return scanner.nextLine().trim();
+}
 }
