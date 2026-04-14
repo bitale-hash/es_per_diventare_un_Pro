@@ -106,7 +106,6 @@ public class ExpenseService {
     }
     public Expense getMaxExpense() {
         return expenses.stream()
-        .filter(e -> e.getAmount() != null)
         .max(Comparator.comparing(Expense::getAmount))
         .orElseThrow(() -> new IllegalStateException("No expenses available"));
     }
@@ -123,7 +122,6 @@ public class ExpenseService {
     //METODI DI ORDINAMENTO
     public List<Expense> getExpensesSortedByDate() {
         return expenses.stream()
-            .filter(e -> e.getDate() != null)
             .sorted(Comparator.comparing(Expense::getDate))
             .toList();
     }
@@ -136,8 +134,7 @@ public class ExpenseService {
         LocalDate now = LocalDate.now();
 
         return sum(expenses.stream()
-            .filter(e -> e.getDate() != null &&
-                         !e.getDate().isBefore(now.minusDays(7))) 
+            .filter(e -> !e.getDate().isBefore(now.minusDays(7))) 
             .toList());
     }
         
