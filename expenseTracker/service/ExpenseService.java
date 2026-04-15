@@ -27,9 +27,16 @@ public class ExpenseService {
     }
         //CRUD
     public void addExpense(String description, BigDecimal amount, Category category, LocalDate date, String note) {
+        
         Expense expense = Expense.create(description, amount, category, date, note);
-        if (expenses.contains(expense)) 
-            throw new IllegalArgumentException("Expense already exists");
+        boolean duplicate = expenses.stream().anyMatch(e -> e.getDescription().equals(description)
+                                                        && e.getAmount().equals(expense.getAmount())
+                                                        && Objects.equals(e.getDate(), date));
+                                                        //e.getDate().equals(date));
+
+        if (duplicate) 
+            throw new IllegalArgumentException("Duplicate expense");
+
         expenses.add(expense);
         save();
     }
@@ -84,15 +91,19 @@ public class ExpenseService {
     public List<Expense> findByCategory(Category category) {
         Objects.requireNonNull(category, "Category cannot be null");
         return expenses.stream()
-            .filter(e -> category.equals(e.getCategory())) //seleziona solo cio che rispetta la condizione
-            .toList() ;                                //colleziona i risultati in una lista
+            .filter(e -> category.equals(e.getCategory()))          //seleziona solo cio che rispetta la condizione
+            .map(this::copyExpense)                                        
+            .toList() ; 
+        
+                                         //colleziona i risultati in una lista
     }
     
     public List<Expense> findByDate(LocalDate date) {
         Objects.requireNonNull(date, "Date cannot be null");
         return expenses.stream()
             .filter(e -> e.getDate() != null &&
-                         e.getDate().equals(date))
+                         Objects.equals(e.getDate(), date))
+                         .map(this::copyExpense)
             .toList();
     }
     
@@ -102,11 +113,14 @@ public class ExpenseService {
     // METODI PUBBLICI 
 
     public List<Expense> getExpenses() {
-        return List.copyOf(expenses);   //restituisce una copia della lista originale per evitare modifiche esterne               
+        return expenses.stream().map(this::copyExpense).toList();
+            //return List.copyOf(expenses);   //restituisce una copia della lista originale per evitare modifiche esterne
+            
     }
     public Expense getMaxExpense() {
         return expenses.stream()
-        .max(Comparator.comparing(Expense::getAmount))
+        .max(Comparator.comparing(Expense::getAmount, Comparator.nullsLast(BigDecimal::compareTo)))
+        .map(this::copyExpense)
         .orElseThrow(() -> new IllegalStateException("No expenses available"));
     }
     
@@ -122,19 +136,22 @@ public class ExpenseService {
     //METODI DI ORDINAMENTO
     public List<Expense> getExpensesSortedByDate() {
         return expenses.stream()
-            .sorted(Comparator.comparing(Expense::getDate))
+            .sorted(Comparator.comparing(Expense::getDate, Comparator.nullsLast(Comparator.naturalOrder())))
+            .map(this::copyExpense)
             .toList();
     }
     public List<Expense> getExpensesSortedByAmountDesc() {
         return expenses.stream()
-            .sorted(Comparator.comparing(Expense::getAmount).reversed())
+            .sorted(Comparator.comparing(Expense::getAmount, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+            .map(this::copyExpense)
             .toList();
     }
     public BigDecimal getLast7DaysTotal() {
         LocalDate now = LocalDate.now();
 
         return sum(expenses.stream()
-            .filter(e -> !e.getDate().isBefore(now.minusDays(7))) 
+            .filter(e -> e.getDate() != null &&
+                        !e.getDate().isBefore(now.minusDays(7))) 
             .toList());
     }
         
@@ -143,12 +160,21 @@ public class ExpenseService {
     //METODI PRIVATI
     
     private BigDecimal sum(List<Expense> list) {
-    return list.stream()
-            .map(Expense::getAmount)
+        return list.stream()
+            .map(e -> Objects.requireNonNullElse(e.getAmount(), BigDecimal.ZERO))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     private void save() {
-
-    repository.saveExpenses(expenses);
-}
+        repository.saveExpenses(expenses);
+    }
+    private Expense copyExpense(Expense e) {
+    return Expense.load(
+            e.getId(),
+            e.getDescription(),
+            Objects.requireNonNullElse(e.getAmount(), BigDecimal.ZERO),
+            e.getCategory(),
+            e.getDate(),
+            e.getNote()
+        );
+    }
 }

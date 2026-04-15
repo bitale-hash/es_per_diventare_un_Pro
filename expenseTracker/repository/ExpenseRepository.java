@@ -1,14 +1,18 @@
 package es_per_diventare_un_Pro.expenseTracker.repository;
-
 import es_per_diventare_un_Pro.expenseTracker.model.Expense;      
-import es_per_diventare_un_Pro.expenseTracker.model.Category; 
+import es_per_diventare_un_Pro.expenseTracker.model.Category;
+ 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-
-//questi import qua giù controlla se servono
 import java.util.List;
 import java.util.ArrayList;
-import java.io.*;       
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;     
 
 public class ExpenseRepository {
      
@@ -38,7 +42,7 @@ public class ExpenseRepository {
              
         }
         } catch (IOException e) {
-             System.out.println("Errore salvataggio: " + e.getMessage());
+                throw new RuntimeException("Errore salvataggio file expenses.txt", e);
         }
     }
     
@@ -69,12 +73,12 @@ public class ExpenseRepository {
                         continue;
                    try{ 
 
-                        BigDecimal amount = new BigDecimal(parts[2]).setScale(2, BigDecimal.ROUND_HALF_UP);  
+                        BigDecimal amount = new BigDecimal(parts[2]).setScale(2, RoundingMode.HALF_UP); 
                         Category category = Category.valueOf(parts[3]); 
-                        LocalDate date = LocalDate.parse(parts[4]);   //controlla
+                        LocalDate date = parts[4].isBlank() ? null : LocalDate.parse(parts[4]);
                         String note = parts[5];
 
-                        Expense expense = new Expense(id, description, amount, category, date, note);
+                        Expense expense = Expense.load(id, description, amount, category, date, note);
                         expenses.add(expense);
 
                     } catch (IllegalArgumentException e) {
@@ -84,7 +88,7 @@ public class ExpenseRepository {
                 
             }
         } catch (IOException e) {
-             System.out.println("Errore caricamento: " + e.getMessage());
+            throw new RuntimeException("Errore caricamento file expenses.txt", e);
         }
 
         return expenses;  //restituisce la lista di expense caricati
