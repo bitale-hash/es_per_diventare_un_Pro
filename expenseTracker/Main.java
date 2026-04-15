@@ -14,6 +14,6 @@ public class Main {
         ExpenseService service = new ExpenseService(repository.loadExpenses(), repository);
 
         ConsoleUI ui = new ConsoleUI(service);
-        ui.start();
+        ui.run();  //non dovrebbe essere "run" invece di "start", controlla --- IGNORE ---
     }
 }
